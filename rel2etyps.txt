@@ -1,0 +1,14 @@
+per:alternate_names	B-PER	B-PER
+per:country_of_birth	B-PER	B-GPE B-LOC B-NORP
+per:country_of_death	B-PER	B-GPE B-LOC B-NORP
+per:schools_attended	B-PER	B-ORG B-FAC
+per:member_of	B-PER	B-ORG
+per:employee_or_member_of	B-PER	B-ORG
+per:children	B-PER	B-PER
+per:parents	B-PER	B-PER
+org:alternate_names	B-ORG B-FAC	B-ORG B-FAC
+org:subsidiaries	B-ORG	B-ORG
+org:parents	B-ORG	B-ORG
+org:founded_by	B-ORG	B-PER
+org:country_of_headquarters	B-ORG	B-LOC B-GPE
+org:shareholders 	B-ORG	B-PER
