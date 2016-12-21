@@ -1,0 +1,24 @@
+A file which helps for trainning data generation is fb2tac.txt, this features 8.000.000 lines of facts from freebase linked to a TAC-KBP relation.
+This excludes some relations like 'per:charges' and 'per:cause_of_death', these relations were bootstrapped using high precision patterns for our system.
+
+The format is:
+> TAC-relation, FreebaseRelation, Source entity, Slot filler . 
+,e.g.
+> per:date_of_birth,ns:people.person.date_of_birth,Fred Rogers,"1928-03-20"^^xsd:datetime.
+> per:parents,ns:people.person.parents,Fred Rogers,James Rogers.
+> per:title,ns:people.person.profession,Fred Rogers,Songwriter.
+
+From these lines you can generate training examples by extracting sentences (e.g. using nltk's sentence tokenizer) from documents and detect co-occurences of the entities participating in the relation by simply matching the strings.
+I matched the entities by a single full name appearance in the document and after that allowed for only the last name to be present in the sentence together with the slot filler, thus no complex entity linking.
+If a sentence is matched, you can generate a training sample and extract features for the corresponding relation. Negative examples are sentences with co-occurrences of entities missing for the corresponding relation.
+Features are extracted using components from Stanford's CoreNLP, I used a python wrapper which runs CoreNLP as a server and allows calling it from python scripts using json-rpc messages, see this github.
+Keep in mind that for relations like origin you should detect demonyms as well, e.g. if a person has per:origin England, you should also match English as a valid slot filler.
+Time expressions need to be extracted and converted, they are stored as 2016-08-05 format but need to be matched to expressions like the fifth of august, for this I included a python script named timetag.py in the folder.
+
+An important component is the tagger or NER which extracts candidates from phrases. For this I simply used the Stanford 7-class NER recognizer from Corenlp extended with table-lookups.
+For example, CoreNLP recognizes Locations but for TAC we need Countries, states and cities.
+These NER extensions are all included in file tagger_extensions.txt. After the document is tagged using basic Stanford NER, the complete lookup table needs to be searched for possible matches in the text.
+The NER-tag to TAC-KBP links are included in the file links.txt.
+
+Also included is a file with high precision patterns (patterns.txt), country to demonyms (demonym.txt), state to demonyms (state_adjective) ,city to demonyms (city_adjective.txt), list of schools (schools.txt), list of states (state_list.txt).
+Some relations from the Cold Start task are simply the reverse of others from the TAC SF schema, to convert them use the links in cs_links.txt.
